@@ -7,7 +7,7 @@ setup(
   description = 'Stocket API Connection Package',   # Give a short description about your library
   author = 'EvilTeliportist',                   # Type in your name
   author_email = 'evilteliportist@gmail.com',      # Type in your E-Mail
-  url = 'https://github.com/EvilTeliportist/bar/',   # Provide either the link to your github or to your website
+  url = 'https://github.com/EvilTeliportist/pystocket/',   # Provide either the link to your github or to your website
   download_url = 'https://github.com/EvilTeliportist/pystocket/archive/1.0.tar.gz',    # I explain this later on
   keywords = [],   # Keywords that define your package best
   install_requires=[],
