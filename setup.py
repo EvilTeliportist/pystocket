@@ -10,7 +10,7 @@ setup(
   url = 'https://github.com/EvilTeliportist/pystocket/',   # Provide either the link to your github or to your website
   download_url = 'https://github.com/EvilTeliportist/pystocket/archive/1.0.tar.gz',    # I explain this later on
   keywords = [],   # Keywords that define your package best
-  install_requires=[],
+  install_requires=['requests', 'pandas', 'json', 'numpy'],
   classifiers=[
     'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
     'Intended Audience :: Developers',      # Define that your audience are developers
