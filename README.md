@@ -1,4 +1,4 @@
-# pystocket
+# pystocket (https://rtstockdata.azurewebsites.net/)
 
 Stocket is a lightweight finance API designed to provide quick and easy access to stock market data. We use an Node.js server connected to an SQL database, and update the database every minute through a separate application using asynchronous requests to avoid clogging the main web server. Our main implementation, PyStocket can be installed as a Python package. Please view the documentation on the GitHub, and review the usage parameters before using. Improper use could result in the automated deactivation of your token. Stocket is not meant to be the fastest or most expansive API, but aims to provide beginners with a simple source of stock market data down to per minute increments, so that anybody interested in quantitative finance can easily get started with comprehensible data.
 
