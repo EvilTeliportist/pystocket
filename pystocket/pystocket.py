@@ -96,5 +96,3 @@ class Stocket():
     def export_CSV(self, ticker, start, end):
         data = self.get(ticker, start, end, True)
         return data.to_csv("C:\\Users\\" + os.getlogin() + "\\Desktop\\" + ticker + ".csv", index=False)
-
-    graph('FB', "09/17/2020 9:30", "09/17/2020 16:00", interval="2m")
