@@ -1,5 +1,6 @@
 import requests, json, numpy, os
 import pandas as pd
+from datetime import datetime
 import yahoo_fin as yf
 import yahoo_fin.stock_info as si
 import yahoo_fin.options as op
@@ -21,12 +22,21 @@ class Stocket():
         response = requests.get(url, headers=headers,
                                 json={'ticker': ticker, 'start': start, 'end': end, 'token': self.token})
 
-        if response.json()['message'] == 'bad chars':
+        respJson = response.json()['message']
+
+        if respJson == 'bad chars':
             raise ValueError(
                 "Please exclude quotation characters and semicolons from your queries. This helps protect us from SQL injection attacks.")
 
-        if response.json()['message'] == 'Invalid Token':
+        if respJson == 'Invalid Token':
             raise TokenError("Invalid API Token")
+
+        if respJson == 'Invalid Ticker':
+            raise ValueError("Invalid ticker. This ticker is not supported in Stocket.")
+
+
+        if start < '2020-09-17 09:35' or end > datetime.now().strftime('%Y-%m-%d %H:%m'):
+            raise ValueError("Invalid date. Please enter a start date after 2020-09-17 09:35")
 
         parsed = {}
         for pair in response.json()['data']['recordsets'][0]:
@@ -96,3 +106,5 @@ class Stocket():
     def export_CSV(self, ticker, start, end):
         data = self.get(ticker, start, end, True)
         return data.to_csv("C:\\Users\\" + os.getlogin() + "\\Desktop\\" + ticker + ".csv", index=False)
+
+
