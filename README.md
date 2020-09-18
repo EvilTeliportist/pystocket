@@ -8,6 +8,10 @@ Lastly, please remember that this API updates itself, and only has data back unt
 
 Thank you, and happy trading!
 
+# Installation
+
+``` pip install pystocket ```
+
 # Example Usage
 ```
 from pystocket import Stocket
