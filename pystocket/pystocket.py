@@ -97,6 +97,7 @@ class Stocket():
         width = 12
         height = 10
         plt.figure(figsize=(width, height))
+<<<<<<< HEAD
 
         # Check if user didn't input a list
         if isinstance(tickers, str):
@@ -109,6 +110,45 @@ class Stocket():
                 times = [datetime.strptime(time, '%Y-%m-%d %H:%M:%S') for time in raw_data.keys()]
                 prices = [raw_data[time] for time in raw_data.keys()]
                 plt.plot(times, prices, label=ticker)
+=======
+        for ticker in tickers:
+            raw_data = self.get(ticker, start, end, pandas=True)
+            try:
+                interval_num = int(interval[0:len(interval) - 1])
+            except:
+                raise ValueError("Please enter the right interval value.")
+
+            # elif interval[1:] == 'd': - When eod table/data added
+            if interval[len(interval) - 1:] == 'm':
+                for i in range(0, len(raw_data.index)):
+                    if i % interval_num != 0:
+                        raw_data.drop(i, axis=0, inplace=True)
+            else:
+                raise ValueError("Please enter the right interval value.")
+            plt.plot(raw_data['time'], raw_data['price'], label=ticker)
+        plt.title("Stock Data")
+        plt.ylabel('Price')
+        plt.xlabel('Time (' + interval + ')')
+        plt.legend()
+        plt.show()
+        plt.close()
+
+    def graph(self, ticker, start, end, interval="1m"):
+        width = 12
+        height = 10
+        plt.figure(figsize=(width, height))
+        raw_data = self.get(ticker, start, end, pandas=True)
+        try:
+            interval_num = int(interval[0:len(interval) - 1])
+        except:
+            raise ValueError("Please enter the right interval value.")
+
+        # elif interval[1:] == 'd': - When eod table/data added
+        if interval[len(interval) - 1:] == 'm':
+            for i in range(0, len(raw_data.index)):
+                if i % interval_num != 0:
+                    raw_data.drop(i, axis=0, inplace=True)
+>>>>>>> a55cacff65de091b4f2882ee762d0f777ec4ea81
         else:
             for ticker in tickers:
                 raw_data = self.get(ticker, start, end, interval=interval)
