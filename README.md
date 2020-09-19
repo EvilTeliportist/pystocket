@@ -21,10 +21,29 @@ stocket = Stocket('<your token here>')
 print(stocket.get('MSFT', '2020-09-17 09:38', '2020-09-17 09:50'))
 ```
 
-## Available Methods
+## Available Methods - *required
 
-get(ticker, start, end, pandas)
-- ticker: string ("MSFT")
-- start: string (see formatting above)
-- end: string (see formatting above)
-- pandas (optional argument): bool
+get() - simple get method, requests from API
+- ticker*: string ("MSFT")
+- start*: string (see formatting above)
+- end*: string (see formatting above)
+- pandas: bool (defaults false)
+- interval: string (defaults '1min')(formatting: 'int + min/hr')
+
+
+graph() - matplotlib graph of ticker percentage growth
+- tickers*: list of strings (["AAPL"])
+- start*: string (see formatting above)
+- end*: string (see formatting above)
+- interval: string (defaults '1min')(formatting: 'int + min/hr')
+- type: defaults to percentage
+- - "percentage": shows percentage growth from first day requested
+- - "price": shows price of ticker
+
+exportToCSV() - exports data to CSV file
+- tickers*: string ("TSLA")
+- start*: string (see formatting above)
+- end*: string (see formatting above)
+
+setToken() - sets token
+- token*: string
