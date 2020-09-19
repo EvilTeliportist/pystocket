@@ -56,7 +56,7 @@ class Stocket():
         height = 10
         plt.figure(figsize=(width, height))
         for ticker in tickers:
-            raw_data = self.get(ticker, start, end,True)
+            raw_data = self.get(ticker, start, end, pandas=True)
             try:
                 interval_num = int(interval[0:len(interval) - 1])
             except:
@@ -81,7 +81,7 @@ class Stocket():
         width = 12
         height = 10
         plt.figure(figsize=(width, height))
-        raw_data = self.get(ticker, start, end, True)
+        raw_data = self.get(ticker, start, end, pandas=True)
         try:
             interval_num = int(interval[0:len(interval) - 1])
         except:
