@@ -1,11 +1,11 @@
 import requests, json, numpy, os
 import pandas as pd
-from datetime import datetime
 import yahoo_fin as yf
+from datetime import datetime
 import yahoo_fin.stock_info as si
 import yahoo_fin.options as op
 import matplotlib.pyplot as plt
-
+import seaborn as sns
 url = "https://rtstockdata.azurewebsites.net/request"
 headers = {'Content-Type': "application/json", 'Accept': "application/json"}
 
@@ -24,7 +24,15 @@ class Stocket():
             return datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
         else:
             return time
-         
+
+    def get_historical(self,ticker,start,end,interval):
+        df = pd.DataFrame
+        try:
+            df = si.get_data(ticker, start_date=start, end_date=end, index_as_date=False, interval=interval)
+        except Exception as e:
+            print(e)
+        return df
+
     def get(self, ticker, start, end, pandas=False, interval='1min'):
 
         # Make requests and get server response
@@ -47,7 +55,6 @@ class Stocket():
         if start < '2020-09-17 09:35' or end > datetime.now().strftime('%Y-%m-%d %H:%m'):
             raise ValueError("Invalid date. Please enter a start date after 2020-09-17 09:35")
 
-        
         # Get raw minute data
         parsed = {}
         for pair in response.json()['data']['recordsets'][0]:
@@ -82,7 +89,6 @@ class Stocket():
                     index += 1
             parsed = temp_data
 
-
         # Convert to pandas dataframe if need be
         if pandas:
             parsedprice = pd.Series(list(parsed.values()), name='price')
@@ -97,7 +103,6 @@ class Stocket():
         width = 12
         height = 10
         plt.figure(figsize=(width, height))
-<<<<<<< HEAD
 
         # Check if user didn't input a list
         if isinstance(tickers, str):
@@ -110,22 +115,27 @@ class Stocket():
                 times = [datetime.strptime(time, '%Y-%m-%d %H:%M:%S') for time in raw_data.keys()]
                 prices = [raw_data[time] for time in raw_data.keys()]
                 plt.plot(times, prices, label=ticker)
-=======
-        for ticker in tickers:
-            raw_data = self.get(ticker, start, end, pandas=True)
-            try:
-                interval_num = int(interval[0:len(interval) - 1])
-            except:
-                raise ValueError("Please enter the right interval value.")
+        else:
+            for ticker in tickers:
+                try:
+                    interval_num = int(interval[0:len(interval) - 1])
+                except:
+                    raise ValueError("Please enter the right interval value.")
 
-            # elif interval[1:] == 'd': - When eod table/data added
-            if interval[len(interval) - 1:] == 'm':
-                for i in range(0, len(raw_data.index)):
-                    if i % interval_num != 0:
-                        raw_data.drop(i, axis=0, inplace=True)
-            else:
-                raise ValueError("Please enter the right interval value.")
-            plt.plot(raw_data['time'], raw_data['price'], label=ticker)
+                if interval[len(interval) - 1:] == 'm':
+                    raw_data = self.get(ticker, start, end, pandas=True)
+                    for i in range(0, len(raw_data.index)):
+                        if i % interval_num != 0:
+                            raw_data.drop(i, axis=0, inplace=True)
+                    plt.plot(raw_data['time'], raw_data['price'], label=ticker)
+                elif interval[1:] == 'd':
+                    raw_data = self.get_historical(ticker, start, end,"1d")
+                    for i in range(0, len(raw_data.index)):
+                        if i % interval_num != 0:
+                            raw_data.drop(i, axis=0, inplace=True)
+                    plt.plot(raw_data['date'], raw_data['adjclose'], label=ticker)
+                else:
+                    raise ValueError("Please enter the right interval value.")
         plt.title("Stock Data")
         plt.ylabel('Price')
         plt.xlabel('Time (' + interval + ')')
@@ -133,45 +143,11 @@ class Stocket():
         plt.show()
         plt.close()
 
-    def graph(self, ticker, start, end, interval="1m"):
-        width = 12
-        height = 10
-        plt.figure(figsize=(width, height))
-        raw_data = self.get(ticker, start, end, pandas=True)
-        try:
-            interval_num = int(interval[0:len(interval) - 1])
-        except:
-            raise ValueError("Please enter the right interval value.")
-
-        # elif interval[1:] == 'd': - When eod table/data added
-        if interval[len(interval) - 1:] == 'm':
-            for i in range(0, len(raw_data.index)):
-                if i % interval_num != 0:
-                    raw_data.drop(i, axis=0, inplace=True)
->>>>>>> a55cacff65de091b4f2882ee762d0f777ec4ea81
-        else:
-            for ticker in tickers:
-                raw_data = self.get(ticker, start, end, interval=interval)
-                times = [datetime.strptime(time, '%Y-%m-%d %H:%M:%S') for time in raw_data.keys()]
-                prices = [raw_data[time] for time in raw_data.keys()]
-                percents = [(price - prices[0]) * 100 / prices[0] for price in prices]
-                plt.plot(times, percents, label=ticker)
-
-        # Graph Initializations
-        plt.title("Stock Data")
-        plt.ylabel('Percentage Gained')
-        plt.xlabel('Time (' + interval + ')')
-        plt.legend()
-        plt.show()
-        plt.close()
-
-    def exportToCSV(self, ticker, start, end):
-        data = self.get(ticker, start, end, pandas=True)
+    def export_CSV(self, ticker, start, end):
+        data = self.get(ticker, start, end, True)
         return data.to_csv("C:\\Users\\" + os.getlogin() + "\\Desktop\\" + ticker + ".csv", index=False)
 
-    def setToken(self, token):
-        self.token = token
+stock = Stocket("JOkuFdOZsmINV3od9vfB3WutuDKc13ED2GcNiCIM")
+#stock.graph(['AAPL'], "08/19/2020", "09/18/2020", interval="1d")
+stock.graph(['MSFT'], "2020-09-17 10:00", "2020-09-18 16:00", interval="1m",graphType="price")
 
-stocket = Stocket('UkV3i6ovBjVXI8bjeD4px8PSdQJR2VuVRyKl9CgE')
-
-stocket.graph(['MSFT', 'AAPL'], '2020-09-17 09:38', '2020-09-18 15:00')
