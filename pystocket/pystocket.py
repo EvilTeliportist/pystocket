@@ -25,6 +25,7 @@ class Stocket():
         else:
             return time
 
+    # Needs exception handling
     def get_historical(self,ticker,start,end,interval):
         df = pd.DataFrame
         try:
@@ -32,6 +33,30 @@ class Stocket():
         except Exception as e:
             print(e)
         return df
+
+    # Needs exception handling
+    def get_stock_info(self,ticker):
+        return si.get_quote_table(ticker, dict_result=False)
+
+    # Needs formatting and execption handling
+    def compare_stock_fundementals(self, tickers):
+        if isinstance(tickers, str):
+            return ValueError("Please use a list of tickers instead of just one. Ex: ['MSFT']")
+
+        data = {}
+        for ticker in tickers:
+            temp = si.get_stats_valuation(ticker)
+            temp = temp.iloc[:, :2]
+            temp.columns = ["Attribute", "Value"]
+            data[ticker] = temp
+
+        combined_stats = pd.concat(data)
+        combined_stats = combined_stats.reset_index()
+        del combined_stats["level_1"]
+        combined_stats.columns = ["Ticker", "Attribute", "Value"]
+        return combined_stats
+
+
 
     def get(self, ticker, start, end, pandas=False, interval='1min'):
 
@@ -149,5 +174,6 @@ class Stocket():
 
 stock = Stocket("JOkuFdOZsmINV3od9vfB3WutuDKc13ED2GcNiCIM")
 #stock.graph(['AAPL'], "08/19/2020", "09/18/2020", interval="1d")
-stock.graph(['MSFT'], "2020-09-17 10:00", "2020-09-18 16:00", interval="1m",graphType="price")
+#stock.graph(['MSFT'], "2020-09-17 10:00", "2020-09-18 16:00", interval="1m",graphType="price")
+print(stock.compare_stock_fundementals(['MSFT','AAPL']))
 
