@@ -6,7 +6,7 @@ import yahoo_fin.stock_info as si
 import yahoo_fin.options as op
 import matplotlib.pyplot as plt
 
-url = "https://rtstockdata.azurewebsites.net/request"
+url = "https://rtstockdata.azurewebsites.net/"
 headers = {'Content-Type': "application/json", 'Accept': "application/json"}
 
 
@@ -28,7 +28,7 @@ class Stocket():
     def get(self, ticker, start, end, pandas=False, interval='1min'):
 
         # Make requests and get server response
-        response = requests.get(url, headers=headers,
+        response = requests.get(url + 'request', headers=headers,
                                 json={'ticker': ticker, 'start': start, 'end': end, 'token': self.token})
 
         respJson = response.json()['message']
@@ -97,20 +97,6 @@ class Stocket():
         width = 12
         height = 10
         plt.figure(figsize=(width, height))
-<<<<<<< HEAD
-
-        # Check if user didn't input a list
-        if isinstance(tickers, str):
-            return ValueError("Please use a list of tickers instead of just one. Ex: ['MSFT']")
-
-        # Graph price or percent
-        if graphType == 'price':
-            for ticker in tickers:
-                raw_data = self.get(ticker, start, end, interval=interval)
-                times = [datetime.strptime(time, '%Y-%m-%d %H:%M:%S') for time in raw_data.keys()]
-                prices = [raw_data[time] for time in raw_data.keys()]
-                plt.plot(times, prices, label=ticker)
-=======
         for ticker in tickers:
             raw_data = self.get(ticker, start, end, pandas=True)
             try:
@@ -133,38 +119,6 @@ class Stocket():
         plt.show()
         plt.close()
 
-    def graph(self, ticker, start, end, interval="1m"):
-        width = 12
-        height = 10
-        plt.figure(figsize=(width, height))
-        raw_data = self.get(ticker, start, end, pandas=True)
-        try:
-            interval_num = int(interval[0:len(interval) - 1])
-        except:
-            raise ValueError("Please enter the right interval value.")
-
-        # elif interval[1:] == 'd': - When eod table/data added
-        if interval[len(interval) - 1:] == 'm':
-            for i in range(0, len(raw_data.index)):
-                if i % interval_num != 0:
-                    raw_data.drop(i, axis=0, inplace=True)
->>>>>>> a55cacff65de091b4f2882ee762d0f777ec4ea81
-        else:
-            for ticker in tickers:
-                raw_data = self.get(ticker, start, end, interval=interval)
-                times = [datetime.strptime(time, '%Y-%m-%d %H:%M:%S') for time in raw_data.keys()]
-                prices = [raw_data[time] for time in raw_data.keys()]
-                percents = [(price - prices[0]) * 100 / prices[0] for price in prices]
-                plt.plot(times, percents, label=ticker)
-
-        # Graph Initializations
-        plt.title("Stock Data")
-        plt.ylabel('Percentage Gained')
-        plt.xlabel('Time (' + interval + ')')
-        plt.legend()
-        plt.show()
-        plt.close()
-
     def exportToCSV(self, ticker, start, end):
         data = self.get(ticker, start, end, pandas=True)
         return data.to_csv("C:\\Users\\" + os.getlogin() + "\\Desktop\\" + ticker + ".csv", index=False)
@@ -172,6 +126,6 @@ class Stocket():
     def setToken(self, token):
         self.token = token
 
-stocket = Stocket('UkV3i6ovBjVXI8bjeD4px8PSdQJR2VuVRyKl9CgE')
+    def dividends(self):
+        return requests.get(url + 'dividends', headers=headers, json={'token':self.token}).json()
 
-stocket.graph(['MSFT', 'AAPL'], '2020-09-17 09:38', '2020-09-18 15:00')
