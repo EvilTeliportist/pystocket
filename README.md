@@ -47,3 +47,6 @@ exportToCSV() - exports data to CSV file
 
 setToken() - sets token
 - token*: string
+
+dividends() - gets all dividends data
+- no args
